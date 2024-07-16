@@ -11,22 +11,22 @@ def rand_slug():
 
 class Category(models.Model):
     name = models.CharField(verbose_name="Категория", max_length=100, db_index=True)
-    parent_category = models.ForeignKey('self', verbose_name='Родитель', null=True, blank=True,
+    parent = models.ForeignKey('self', verbose_name='Родитель', null=True, blank=True,
                                         related_name='children', on_delete=models.CASCADE)
     slug = models.SlugField(verbose_name='URL', max_length=250, unique=True, null=False, editable=True)
     created_at = models.DateTimeField('Дата создания', auto_now_add=True)
 
     class Meta:
-        unique_together = (('parent_category', 'slug'),)
+        unique_together = (('parent', 'slug'),)
         verbose_name = 'Категория'
         verbose_name_plural = 'Категории'
 
     def __str__(self):
         full_path = [self.name]
-        k = self.parent_category
+        k = self.parent
         while k is not None:
             full_path.append(k.name)
-            k = k.parent_category
+            k = k.parent
         return ' > '.join(full_path[::-1])
 
     def save(self, *args, **kwargs):
