@@ -34,8 +34,8 @@ class Category(models.Model):
             self.slug = slugify(rand_slug() + '-' + self.name)
         super(Category, self).save(*args, **kwargs)
 
-    # def get_absolute_url(self):
-    #     return reverse('shop:category', kwargs={'slug': self.slug})
+    def get_absolute_url(self):
+        return reverse('shop:category_list', kwargs={'slug': self.slug})
 
 
 class Product(models.Model):
@@ -43,6 +43,7 @@ class Product(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
     brand = models.CharField('Бренд', max_length=100, db_index=True)
     description = models.TextField('Описание', blank=True)
+    image = models.ImageField(verbose_name='Изображение', upload_to='products', null=True, blank=True)
     slug = models.SlugField(verbose_name='URL', max_length=250, unique=True, null=False, editable=True)
     price = models.DecimalField(verbose_name='Цена', max_digits=10, decimal_places=2, default=99.99)
     available = models.BooleanField(default=True)
@@ -56,8 +57,8 @@ class Product(models.Model):
     def __str__(self):
         return self.title
 
-    # def get_absolute_url(self):
-    #     return reverse('shop:product', kwargs={'slug': self.slug})
+    def get_absolute_url(self):
+        return reverse('shop:product_detail', kwargs={'slug': self.slug})
 
 
 class ProductManager(models.Manager):
